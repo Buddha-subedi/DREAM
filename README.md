@@ -157,10 +157,10 @@ booster_cpr = xgb.train(
 [phase, rain, snow, latitude, longitude] = TLPR2S_model(path_orbit_004780, booster, snow_rate_booster, rain_rate_booster, df_cdf_rain, df_cdf_snow);
 ```
 <p align="center">
-  <img src="images/Fig_04.png" alt="Training for ERA5-CPR classifier base learner" width="700" />
+  <img src="Figures/Fig_02.png" alt="Training for ERA5-CPR classifier base learner" width="700" />
 </p>
 <p align="center">
-  <em>Three selected GMI TBs (a--c) and precipitation from MRMS (d), TLP-R2S (e), and GPROF (f) for orbit 045821 on March 23, 2022, over the Midwest United States. Likewise, selected GMI TBs (g--i) and corresponding MRMS (j), TLP-R2S (k), and GPROF (l) precipitation for orbit 045212 on February 11, 2022, over Colorado and Wyoming.</em>
+  <em>Hurricane Calvin on 15 July 2023 captured by the GPM orbit 053278 over the Pacific basin. (a) The GMI observations at vertically polarized 36.5~GHz, (b) the reference DPR active retrievals, (c--e) three stochastic DREAM ensembles (M1-M3) via learned residual added to (f) the deterministic Res-UNet retrievals, and the exceedance probabilities for rainfall rates of (g) 8 and (h) 16~\si{mm.hr^{-1}} obtained from 100 ensemble members.</em>
 </p>
 
 
