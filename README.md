@@ -160,7 +160,20 @@ booster_cpr = xgb.train(
   <img src="Figures/Fig_02.png" alt="Training for ERA5-CPR classifier base learner" width="900" />
 </p>
 <p align="center">
-  <em>Hurricane Calvin on 15 July 2023 captured by the GPM orbit 053278 over the Pacific basin. (a) The GMI observations at vertically polarized 36.5~GHz, (b) the reference DPR active retrievals, (c--e) three stochastic DREAM ensembles (M1-M3) via learned residual added to (f) the deterministic Res-UNet retrievals, and the exceedance probabilities for rainfall rates of (g) 8 and (h) 16~\si{mm.hr^{-1}} obtained from 100 ensemble members.</em>
+  <em>Hurricane Calvin on 15 July 2023 captured by the GPM orbit 053278 over the Pacific basin. (a) The GMI observations at vertically polarized 36.5~GHz, (b) the reference DPR active retrievals, (c--e) three stochastic DREAM ensembles (M1-M3) via learned residual added to (f) the deterministic Res-UNet retrievals, and the exceedance probabilities for rainfall rates of (g) 8 and (h) 16 mm hr<sup>−1</sup> obtained from 100 ensemble members.</em>
+</p>
+
+
+<a name="44"></a> <br>
+ ### Annual Retrievals
+```python
+[phase, rain, snow, latitude, longitude] = TLPR2S_model(path_orbit_004780, booster, snow_rate_booster, rain_rate_booster, df_cdf_rain, df_cdf_snow);
+```
+<p align="center">
+  <img src="Figures/Fig_03.png" alt="Training for ERA5-CPR classifier base learner" width="900" />
+</p>
+<p align="center">
+  <em>Annual mean rainfall rates per revisit from (a) DREAM, (b) Res-UNet, and (c) DPR observations for all the overpasses during 2023, and (d--f) the corresponding frequency counts of retrieved rates exceeding 20 mm hr<sup>−1</sup>.</em>
 </p>
 
 
