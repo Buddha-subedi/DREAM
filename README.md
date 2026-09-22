@@ -1,9 +1,9 @@
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Buddha-subedi/Microwave_Precipitation_Retrievals_from_TLP-R2S/blob/main/TLP-R2S_demo.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Buddha-subedi/DREAM/blob/main/DREAM_demo.ipynb)
 # An Attention-based Conditional Diffusion Model for Super-resolved Passive Microwave Satellite Precipitation Retrievals
 This repository introduces the Attention-Enhanced Residual Corrective Diffusion (AE-RCD), a two-stage probabilistic framework for super-resolved PMW retrieval at near-global scale. First, a residual U-Net (Res-UNet) trained with mean squared error (MSE) and sliced Wasserstein distance loss generates coarse deterministic estimates at Global Precipitation Measurement (GPM) Microwave Imager (GMI) resolution. Second, a conditional denoising diffusion probabilistic model (DDPM) learns the residual toward high-resolution Dual-frequency Precipitation Radar (DPR) targets, fusing multi-frequency brightness temperatures and reanalysis variables through channel, cross-, self-, and bottleneck dual-attention mechanisms. Evaluated on 2023 GPM overpasses including Hurricane Calvin, AE-RCD substantially outperforms deterministic baselines in spatial variability, extreme precipitation frequency, and power spectral fidelity over both ocean and land.
 
 <p align="center">
-  <img src="images/Fig_01.png" width="700" />
+  <img src="Figures/Fig_01.png" width="700" />
 </p>
 
 <p align="center"><em>The TLP-R2S architecture employs incremental training of an ensemble of gradient-boosted decision trees to transfer knowledge from ERA5 simulations to spaceborne radar observations. It is a two-step framework: Step 1 performs classification, and Step 2 applies a regression learner depending upon the detected phase. Each step comprises two stages. In Stage I, a finite number of base trees is sequentially boosted to capture prior relationships between input variables and ERA5 precipitation phase and rate. In Stage II, with a frozen pre-trained model, additional boosting rounds are appended to learn posterior relationships between TBs and active radar observations from DPR and CPR, thereby refining phase and rate estimates.</em></p>
@@ -15,7 +15,7 @@ This repository introduces the Attention-Enhanced Residual Corrective Diffusion 
 ###   Setup
 To run this notebook on Google Colab, clone this repository
 ```python
-!git clone https://github.com/Buddha-subedi/PMWPrecip_TLP-R2S.git
+!git clone https://github.com/Buddha-subedi/DREAM.git
 os.chdir("PMWPrecip_TLP-R2S")
 ```
 
