@@ -22,8 +22,8 @@ To run this notebook on Google Colab, clone this repository
 os.chdir("PMWPrecip_TLP-R2S")
 ```
 
-
-```Timestep Embedding
+### Timestep Embedding
+```python
 def timestep_embedding(timesteps, dim, max_period=10000, device=None):
     if device is None:
         device = timesteps.device
