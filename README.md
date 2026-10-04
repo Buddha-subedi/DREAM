@@ -23,142 +23,67 @@ os.chdir("PMWPrecip_TLP-R2S")
 ```
 
 
-```python
-import numpy as np
-import pandas as pd
-from sklearn.utils import shuffle
-from pathlib import Path
-import xgboost as xgb
-import os
-import scipy.io
-import pmw_utils
-import importlib
-import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, mean_squared_error
-import scipy.stats as stats
-from scipy.interpolate import interp1d
-importlib.reload(pmw_utils)
-from pmw_utils import plot_confusion_matrix, TLPR2S_model
+```Timestep Embedding
+def timestep_embedding(timesteps, dim, max_period=10000, device=None):
+    if device is None:
+        device = timesteps.device
+    
+    half = dim // 2
+    max_period_tensor = torch.tensor(max_period, dtype=torch.float32, device=device)
+    
+    freqs = torch.exp(
+        -torch.log(max_period_tensor) * 
+        torch.arange(half, dtype=torch.float32, device=device) / half
+    )
+    args = timesteps[:, None].float() * freqs[None]
+    embedding = torch.cat([torch.cos(args), torch.sin(args)], dim=-1)
+    if dim % 2:
+        embedding = torch.cat([embedding, torch.zeros_like(embedding[:, :1])], dim=-1)
+    return embedding
 ```
 <a name="42"></a> <br>
- ### Load the Data
+ ### Channel Attention
  
 ```python
-paths_phase = {
-    'cpr_train': 'data/df_cpr_phase_train.npz',
-    'cpr_test':  'data/df_cpr_phase_test.npz',
-    'dpr_train': 'data/df_dpr_phase_train.npz',
-    'dpr_test':  'data/df_dpr_phase_test.npz',
-    'era5_train': 'data/df_era5_phase_train.npz',
-    'era5_test':  'data/df_era5_phase_test.npz'
-}
-data = {k: np.load(p) for k, p in paths_phase.items()}
-dfs = {k: pd.DataFrame(dict(v)) for k, v in data.items()}
-df_cpr_phase_train = dfs['cpr_train']
-df_cpr_phase_test  = dfs['cpr_test']
-df_dpr_phase_train = dfs['dpr_train']
-df_dpr_phase_test  = dfs['dpr_test']
-df_era5_phase_train = dfs['era5_train']
-df_era5_phase_test  = dfs['era5_test']
+class ChannelAttention(nn.Module):
+    """Channel attention matching:
+       AvgPool/MaxPool -> Conv -> ReLU -> Conv -> Add -> Sigmoid -> Multiply
+    """
+    def __init__(self, channels, reduction_ratio=16):
+        super().__init__()
+
+        reduced_channels = max(1, channels // reduction_ratio)
+
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+        self.max_pool = nn.AdaptiveMaxPool2d(1)
+
+        # Shared MLP implemented with 1x1 convolutions
+        self.shared_mlp = nn.Sequential(
+            nn.Conv2d(channels, reduced_channels, kernel_size=1, bias=False),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(reduced_channels, channels, kernel_size=1, bias=False)
+        )
+
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        # Two channel descriptors
+        avg_out = self.shared_mlp(self.avg_pool(x))   # (B, C, 1, 1)
+        max_out = self.shared_mlp(self.max_pool(x))   # (B, C, 1, 1)
+
+        # Add, then sigmoid
+        attention = self.sigmoid(avg_out + max_out)   # (B, C, 1, 1)
+
+        # Multiply with input feature map
+        out = x * attention
+
+        return out
 ```
 
 
 
 <a name="43"></a> <br>
- ### Train the TLP-R2S Model
-TLP-R2S Model has 3 base learners. The hyperparameters and snippet of code adopted for stage 1 and stage 2 for the phase detection is provided below
 
-```python
-#stage 1
-classes = np.unique(df_era5_phase_train['Prcp flag'])
-class_weights = {0: 1, 1: 1.15, 2: 1.32}
-
-sample_weights_70 = df_era5_phase_train['Prcp flag'].map(lambda x: class_weights[classes.tolist().index(x)])
-
-params = {
-    'objective': 'multi:softmax',
-    'num_class': 3,
-    'eval_metric': 'merror',
-    'reg_alpha': 1.351,
-    'reg_lambda': 5.219,
-    'max_depth': 14,
-    'num_parallel_tree': 3,
-    'learning_rate': 0.41302,
-    'gamma': 0.225,
-    'verbosity': 0
-}
-
-booster_era5 = xgb.train(
-    params=params,
-    dtrain=dtrain,
-    evals=evals,
-    num_boost_round=88,
-    verbose_eval=True
-)
-
-
-#stage 2
-classes = np.unique(df_phase_train['Prcp flag'])
-class_weights = {0: 1, 1: 1.267, 2: 1.966}
-sample_weights_sat = df_phase_train['Prcp flag'].map(lambda x: class_weights[classes.tolist().index(x)])
-
-# Set parameters
-params_1 = {
-    'objective': 'multi:softmax',
-    'num_class': 3,
-    'eval_metric': 'merror',
-    'subsample': 0.5,
-    'reg_alpha': 6.948,
-    'reg_lambda': 5.0278,
-    'max_depth': 16,
-    'num_parallel_tree': 6,
-    'learning_rate': 0.011,
-    'gamma': 0.32,
-    'verbosity': 0
-}
-
-booster_era5 = xgb.train(
-    params=params_1,
-    dtrain=dtrain_era5,
-    evals=evals,
-    num_boost_round=83,
-    verbose_eval=True
-)
-
-# Train with the new data (booster here is the final model that is first trained on coarse
-# resolution information from ERA5 and then fine-tuned on fine resolution satellite information)
-params_2 = {
-    'objective': 'multi:softprob',
-    'num_class': 3,
-    'eval_metric': 'merror',
-    'reg_alpha': 6.948,
-    'reg_lambda': 5.0278,
-    'max_depth': 15,
-    'num_parallel_tree': 6,
-    'learning_rate': 0.018,
-    'gamma': 0.32,
-    'verbosity': 0
-}
-
-booster_cpr = xgb.train(
-    params_2,
-    dtrain_cpr,
-    num_boost_round=80,
-    evals=evals,
-    xgb_model=booster_era5,
-    verbose_eval=True,
-    feval=f1_eval_all_classes
-)
-```
-
-
-<a name="44"></a> <br>
- ### Orbital Retrievals
-```python
-[phase, rain, snow, latitude, longitude] = TLPR2S_model(path_orbit_004780, booster, snow_rate_booster, rain_rate_booster, df_cdf_rain, df_cdf_snow);
-```
 <p align="center">
   <img src="Figures/Fig_02.png" alt="Training for ERA5-CPR classifier base learner" width="900" />
 </p>
