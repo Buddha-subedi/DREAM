@@ -4,12 +4,6 @@
 <strong>
 This repository introduces Diffusion-based PMW Rainfall rEtrievals with Attention Mechanisms (DREAM), a two-stage probabilistic framework for super-resolved PMW retrieval at near-global scale. First, a residual U-Net (Res-UNet) trained with mean squared error (MSE) and sliced Wasserstein distance loss generates coarse deterministic estimates at Global Precipitation Measurement (GPM) Microwave Imager (GMI) resolution. Second, a conditional denoising diffusion probabilistic model (DDPM) learns the residual toward high-resolution Dual-frequency Precipitation Radar (DPR) targets, fusing multi-frequency brightness temperatures and reanalysis variables through channel, cross-, self-, and bottleneck dual-attention mechanisms. Evaluated on 2023 GPM overpasses, including Hurricane Calvin, DREAM substantially outperforms deterministic baselines in spatial variability, extreme precipitation frequency, and power spectral fidelity.
 <strong>
-  
-<p align="center">
-  <img src="Figures/Fig_01.png" width="900" />
-</p>
-
-<p align="center"><em>Schematic of the DREAM architecture. (a) A Res-UNet generates deterministic rainfall retrievals at the native radiometric resolution, while an attention-enhanced conditional diffusion model learns and generates rainfall residuals relative to DPR observations. (b) Forward and reverse diffusion processes. (c) U-Net backbone. (d) Cross-attention module. (e) Channel-attention module. (f) Dual-attention bottleneck combining cross- and channel-attention to fuse GMI brightness temperatures and ERA5 variables across multiple spatial scales.</em></p>
 
 <a name="4"></a> <br>
 ## Code
@@ -80,10 +74,15 @@ class ChannelAttention(nn.Module):
         return out
 ```
 
+<p align="center">
+  <img src="Figures/Fig_01.png" width="900" />
+</p>
+
+<p align="center"><em>Schematic of the DREAM architecture. (a) A Res-UNet generates deterministic rainfall retrievals at the native radiometric resolution, while an attention-enhanced conditional diffusion model learns and generates rainfall residuals relative to DPR observations. (b) Forward and reverse diffusion processes. (c) U-Net backbone. (d) Cross-attention module. (e) Channel-attention module. (f) Dual-attention bottleneck combining cross- and channel-attention to fuse GMI brightness temperatures and ERA5 variables across multiple spatial scales.</em></p>
 
 
 <a name="43"></a> <br>
-
+ ### Orbital Retrievals
 <p align="center">
   <img src="Figures/Fig_02.png" alt="Training for ERA5-CPR classifier base learner" width="900" />
 </p>
