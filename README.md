@@ -116,4 +116,4 @@ For questions about the dataset, code, or DREAM framework, please contact:
 **Buddha Subedi**  
 Department of Civil, Environmental, and Geo-Engineering  
 University of Minnesota  
-Email: [your-email@umn.edu](mailto:your-email@umn.edu)
+Email: [your-email@umn.edu](mailto:subed042@umn.edu)
