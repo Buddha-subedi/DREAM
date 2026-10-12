@@ -6,7 +6,17 @@ This repository introduces Diffusion-based PMW Rainfall rEtrievals with Attentio
 </strong>
 
 <p align="center">
-  <img src="Figures/Fig_01_DREAM.png" width="900" />
+  <a href="Figures/Fig_01_DREAM.png">
+    <img
+      src="Figures/Fig_01_DREAM.png"
+      alt="DREAM model architecture"
+      width="100%"
+    />
+  </a>
+</p>
+
+<p align="center">
+  <a href="Figures/Fig_01_DREAM.png">View full-resolution architecture</a>
 </p>
 
 <p align="center"><em>Schematic of the DREAM architecture. (a) A Res-UNet generates deterministic rainfall retrievals at the native radiometric resolution, while an attention-enhanced conditional diffusion model learns and generates rainfall residuals relative to DPR observations. (b) Forward and reverse diffusion processes. (c) U-Net backbone. (d) Cross-attention module. (e) Channel-attention module. (f) Dual-attention bottleneck combining cross- and channel-attention to fuse GMI brightness temperatures and ERA5 variables across multiple spatial scales.</em></p>
