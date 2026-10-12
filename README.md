@@ -1,6 +1,7 @@
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Buddha-subedi/DREAM/blob/main/DREAM_demo.ipynb)
 # An Attention-based Conditional Diffusion Model for Super-resolved Stochastic Passive Microwave Satellite Rainfall Retrievals
 ## Abstract
+
 <strong>
 Deterministic convolutional deep-learning models for passive microwave (PMW) precipitation retrieval often produce overly smooth rainfall fields and underestimate extremes. We introduce Diffusion-based PMW Rainfall REtrievals with Attention Mechanisms (DREAM), a two-stage framework for near-global, super-resolved stochastic retrieval. A residual U-Net first produces coarse rainfall estimates, after which an attention-enhanced conditional diffusion model learns high-resolution residual corrections relative to Global Precipitation Measurement (GPM) Dual-frequency Precipitation Radar (DPR) observations, while sliced Wasserstein regularization promotes fidelity to the heavy-tailed rainfall distribution. Evaluation on temporally independent GPM overpasses in 2023 shows improved distributional and spectral fidelity relative to deterministic and baseline diffusion models, along with better representation of intense-rainfall occurrence and retrieval uncertainty. Across the test sets, DREAM increases the chance of detecting DPR rainfall rates greater than 20 mm.hr<sup>−1</sup> by 77.42 (15.18)% relative to Res-UNet (Vanilla DM).
 </strong>
