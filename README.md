@@ -10,7 +10,7 @@ Deterministic convolutional deep-learning models for passive microwave (PMW) pre
     <img
       src="Figures/Fig_01_DREAM.png"
       alt="DREAM model architecture"
-      width="100%"
+      width="90%"
     />
   </a>
 </p>
