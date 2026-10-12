@@ -2,7 +2,7 @@
 # An Attention-based Conditional Diffusion Model for Super-resolved Stochastic Passive Microwave Satellite Rainfall Retrievals
 ## Abstract
 <strong>
-This repository introduces Diffusion-based PMW Rainfall rEtrievals with Attention Mechanisms (DREAM), a two-stage probabilistic framework for super-resolved PMW retrieval at near-global scale. First, a residual U-Net (Res-UNet) trained with mean squared error (MSE) and sliced Wasserstein distance loss generates coarse deterministic estimates at Global Precipitation Measurement (GPM) Microwave Imager (GMI) resolution. Second, a conditional denoising diffusion probabilistic model (DDPM) learns the residual toward high-resolution Dual-frequency Precipitation Radar (DPR) targets, fusing multi-frequency brightness temperatures and reanalysis variables through channel, cross-, self-, and bottleneck dual-attention mechanisms. Evaluated on 2023 GPM overpasses, including Hurricane Calvin, DREAM substantially outperforms deterministic baselines in spatial variability, extreme precipitation frequency, and power spectral fidelity.
+This repository introduces Diffusion-based PMW Rainfall rEtrievals with Attention Mechanisms (DREAM), a two-stage probabilistic framework for super-resolved PMW retrieval at near-global scale. First, a residual U-Net (Res-UNet) trained with mean squared error (MSE) and sliced Wasserstein distance loss generates coarse deterministic estimates at Global Precipitation Measurement (GPM) Microwave Imager (GMI) resolution. Second, a conditional denoising diffusion probabilistic model (DDPM) learns the residual toward high-resolution Dual-frequency Precipitation Radar (DPR) targets, fusing multi-frequency brightness temperatures and reanalysis variables through channel, cross-, self-, and bottleneck dual-attention mechanisms. Evaluated on 2023 GPM overpasses, including Hurricane Calvin, DREAM substantially improves over deterministic baselines in spatial variability, extreme precipitation frequency, and power spectral fidelity.
 </strong>
 
 <p align="center">
@@ -42,6 +42,17 @@ def timestep_embedding(timesteps, dim, max_period=10000, device=None):
         embedding = torch.cat([embedding, torch.zeros_like(embedding[:, :1])], dim=-1)
     return embedding
 ```
+
+<a name="43"></a> <br>
+ ### Orbital Retrievals
+<p align="center">
+  <img src="Figures/Fig_02.png" alt="Training for ERA5-CPR classifier base learner" width="900" />
+</p>
+<p align="center">
+  <em>Hurricane Calvin on 15 July 2023 captured by the GPM orbit 053278 over the Pacific basin. (a) The GMI observations at vertically polarized 36.5~GHz, (b) the reference DPR active retrievals, (c--e) three stochastic DREAM ensembles (M1-M3) via learned residual added to (f) the deterministic Res-UNet retrievals, and the exceedance probabilities for rainfall rates of (g) 8 and (h) 16 mm hr<sup>−1</sup> obtained from 100 ensemble members.</em>
+</p>
+
+
 <a name="42"></a> <br>
  ### Channel Attention
  
@@ -81,23 +92,9 @@ class ChannelAttention(nn.Module):
         return out
 ```
 
-
-
-<a name="43"></a> <br>
- ### Orbital Retrievals
-<p align="center">
-  <img src="Figures/Fig_02.png" alt="Training for ERA5-CPR classifier base learner" width="900" />
-</p>
-<p align="center">
-  <em>Hurricane Calvin on 15 July 2023 captured by the GPM orbit 053278 over the Pacific basin. (a) The GMI observations at vertically polarized 36.5~GHz, (b) the reference DPR active retrievals, (c--e) three stochastic DREAM ensembles (M1-M3) via learned residual added to (f) the deterministic Res-UNet retrievals, and the exceedance probabilities for rainfall rates of (g) 8 and (h) 16 mm hr<sup>−1</sup> obtained from 100 ensemble members.</em>
-</p>
-
-
 <a name="44"></a> <br>
  ### Annual Retrievals
-```python
-[phase, rain, snow, latitude, longitude] = TLPR2S_model(path_orbit_004780, booster, snow_rate_booster, rain_rate_booster, df_cdf_rain, df_cdf_snow);
-```
+
 <p align="center">
   <img src="Figures/Fig_03.png" alt="Training for ERA5-CPR classifier base learner" width="900" />
 </p>
