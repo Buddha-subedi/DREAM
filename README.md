@@ -27,10 +27,12 @@ Deterministic convolutional deep-learning models for passive microwave (PMW) pre
 
 <a name="41"></a> <br>
 ###   Setup
-To run this notebook on Google Colab, clone this repository
+To run this notebook on Google Colab, upload the provided data to your drive and mount it.
 ```python
-!git clone https://github.com/Buddha-subedi/DREAM.git
-os.chdir("PMWPrecip_TLP-R2S")
+USE_GOOGLE_DRIVE = True
+if USE_GOOGLE_DRIVE:
+    from google.colab import drive
+    drive.mount('/content/drive')
 ```
 
 ### Timestep Embedding
